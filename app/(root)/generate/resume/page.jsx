@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
+import { generateLatexFromState } from '@/components/resumePreview'
 
 function resumeReducer (state, action) {
   switch (action.type) {
@@ -98,6 +99,34 @@ const initialState = {
 export default function ResumeBuilderPage () {
   const [state, dispatch] = useReducer(resumeReducer, initialState)
   const [step, setStep] = useState(1)
+  const [pdfUrl, setPdfUrl] = useState('')
+
+  //Generating the live resume preview url
+  //useEffect doesn't directly support sdync, so you have to create a function within it
+  useEffect(() => {
+    const generatePdfUrl = async () => {
+      const latex = generateLatexFromState(state)
+
+      const res = await fetch('https://latex-api.up.railway.app/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: latex, compiler: 'pdflatex' })
+      })
+
+      if (!res.ok || res.headers.get('Content-Type') !== 'application/pdf') {
+        const err = await res.text()
+        console.error('LaTeX Compile Error:\n', err)
+        alert('LaTeX error! Check console for details.')
+        return
+      }
+
+      const blob = await res.blob()
+      const genPdfUrl = URL.createObjectURL(blob)
+      setPdfUrl(genPdfUrl)
+    }
+
+    generatePdfUrl()
+  }, [state])
 
   const renderPointInputs = (points, sectionType, sectionIndex) =>
     points.map((point, i) => (
@@ -397,7 +426,15 @@ export default function ResumeBuilderPage () {
         )}
       </div>
       <div className='w-1/2 p-6'>
-        <iframe src='' className='w-full h-[90vh] border' title='PDF Preview' />
+        {state !== initialState && (
+          <iframe
+            src={pdfUrl}
+            className='w-full h-[90vh] border'
+            title='PDF Preview'
+            type='application/pdf'
+          />
+        )}
+        <a href={pdfUrl}>Let's go</a>
       </div>
     </div>
   )
