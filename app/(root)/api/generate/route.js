@@ -2,12 +2,18 @@ import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 
 export async function POST(request) {
-  const { name } = await request.json();
+  const { prompt } = await request.json();
 
   try {
     const response = await generateText({
       model: google("gemini-2.0-flash-001"),
-      prompt: `Say hi to the user named ${name}`,
+      prompt: `You are supposed to make the content for a cover letter. It should be in 3 paragraphs, enough for a page. The paragraphs should be seperated, that is on a new line.
+      The following is the prompt:
+      ${prompt}
+      
+      Rules:
+      1. Don't generate anything else
+      2. only the content should be present since it will be directly pasted into the document.`,
     });
 
     console.log("AI Response:", response.text);

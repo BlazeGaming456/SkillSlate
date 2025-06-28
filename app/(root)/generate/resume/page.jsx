@@ -107,7 +107,9 @@ export default function ResumeBuilderPage () {
     const generatePdfUrl = async () => {
       const latex = generateLatexFromState(state)
 
-      const res = await fetch('https://latex-api.up.railway.app/compile', {
+      console.log(latex);
+
+      const res = await fetch('https://latex-compiler-backend-production.up.railway.app/compile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: latex, compiler: 'pdflatex' })
