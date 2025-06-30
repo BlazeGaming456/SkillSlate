@@ -100,12 +100,14 @@ export default function ResumeBuilderPage () {
   const [state, dispatch] = useReducer(resumeReducer, initialState)
   const [step, setStep] = useState(1)
   const [pdfUrl, setPdfUrl] = useState('')
+  const [latexCode, setLatexCode] = useState('');
 
   //Generating the live resume preview url
   //useEffect doesn't directly support sdync, so you have to create a function within it
   useEffect(() => {
     const generatePdfUrl = async () => {
       const latex = generateLatexFromState(state)
+      setLatexCode(latex);
 
       console.log(latex);
 
@@ -129,6 +131,24 @@ export default function ResumeBuilderPage () {
 
     generatePdfUrl()
   }, [state])
+
+  const handleSave = async ()=>{
+    const res = await fetch('/api/save',{
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        latexCode: latexCode,
+      }),
+    })
+
+    const data = await res.json();
+    if (data.success) {
+      console.log('Resume saved successfully: ', data.resume);
+    }
+    else {
+      console.log('Failed to save resume: ', data.error);
+    }
+  }
 
   const renderPointInputs = (points, sectionType, sectionIndex) =>
     points.map((point, i) => (

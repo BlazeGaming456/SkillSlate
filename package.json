@@ -11,12 +11,21 @@
   "dependencies": {
     "@ai-sdk/google": "^1.2.19",
     "@prisma/client": "^6.10.1",
+    "@sparticuz/chromium": "^137.0.1",
     "ai": "^4.3.16",
     "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "express": "^5.1.0",
+    "formidable": "^3.5.4",
+    "fs": "^0.0.1-security",
     "iframe": "^1.0.0",
+    "multer": "^2.0.1",
     "next": "15.3.4",
+    "pdf-parse": "^1.1.1",
+    "puppeteer-core": "^24.11.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
