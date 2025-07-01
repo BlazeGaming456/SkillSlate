@@ -1,19 +1,32 @@
-import { prisma } from '@/lib/db'
+import { authOptions } from "@/components/auth";
+import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
 
-export async function POST (request) {
-    try {
-        const body = await request.json();
+export async function POST(request) {
+  //   const session = await getServerSession(authOptions);
 
-        const resume = await prisma.resume.create({
-            data: {
-                latexCode: body.latexCode,
-            }
-        })
+  //   if (!session) {
+  //     return Response.json(
+  //       { success: false, error: "Unauthorized" },
+  //       { status: 404 }
+  //     );
+  //   }
 
-        return Response.json({ success: true, resume }, { status: 200 })
-    }
-    catch (error) {
-        console.log('Error: ', error);
-        return Response.json({ success: false }, { status:500 });
-    }
+  try {
+    const body = await request.json();
+
+    const email = body.userId;
+
+    const resume = await prisma.resume.create({
+      data: {
+        latexCode: body.latexCode,
+        userId: body.userId,
+      },
+    });
+
+    return Response.json({ success: true, resume, email }, { status: 200 });
+  } catch (error) {
+    console.log("Error: ", error);
+    return Response.json({ success: false }, { status: 500 });
+  }
 }

@@ -2,6 +2,8 @@
 
 import React, { useEffect, useReducer, useState } from 'react'
 import { generateLatexFromState } from '@/components/resumePreview'
+import { improvePoints } from '@/components/improvePoints'
+import { useSession } from 'next-auth/react'
 
 function resumeReducer (state, action) {
   switch (action.type) {
@@ -80,6 +82,34 @@ function resumeReducer (state, action) {
       return { ...state, skills: updated }
     }
 
+    case 'ADD_PROJECT':
+      return {
+        ...state,
+        projects: [
+          ...state.projects,
+          { title: '', date: '', subtitle: '', points: [''] }
+        ]
+      }
+    case 'UPDATE_PROJECT_FIELD': {
+      const updated = [...state.projects]
+      updated[action.index][action.field] = action.payload
+      return { ...state, projects: updated }
+    }
+    case 'UPDATE_PROJECT_POINT': {
+      const updated = [...state.projects]
+      updated[action.projIndex].points[action.pointIndex] = action.payload
+      return { ...state, projects: updated }
+    }
+    case 'ADD_PROJECT_POINT': {
+      const updated = [...state.projects]
+      updated[action.projIndex].points.push('')
+      return { ...state, projects: updated }
+    }
+    case 'DELETE_PROJECT': {
+      const updated = state.projects.filter((_, i) => i !== action.index)
+      return { ...state, projects: updated }
+    }
+
     default:
       return state
   }
@@ -93,6 +123,7 @@ const initialState = {
   linkedin: '',
   education: [{ title: '', date: '', subtitle: '', points: [''] }],
   experience: [{ title: '', date: '', subtitle: '', points: [''] }],
+  projects: [{ title: '', date: '', subtitle: '', points: [''] }],
   skills: [{ type: '', tools: '' }]
 }
 
@@ -100,22 +131,34 @@ export default function ResumeBuilderPage () {
   const [state, dispatch] = useReducer(resumeReducer, initialState)
   const [step, setStep] = useState(1)
   const [pdfUrl, setPdfUrl] = useState('')
-  const [latexCode, setLatexCode] = useState('');
+  const [latexCode, setLatexCode] = useState('')
+  const [improvedPoints, setImprovedPoints] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [aiImprovementType, setAIImprovementType] = useState('')
+  const { data: session, status } = useSession()
+  console.log(status)
+  const email = session?.user?.email
+  if (status === 'authenticated') {
+    console.log(email)
+  }
 
   //Generating the live resume preview url
   //useEffect doesn't directly support sdync, so you have to create a function within it
   useEffect(() => {
     const generatePdfUrl = async () => {
       const latex = generateLatexFromState(state)
-      setLatexCode(latex);
+      setLatexCode(latex)
 
-      console.log(latex);
+      console.log(latex)
 
-      const res = await fetch('https://latex-compiler-backend-production.up.railway.app/compile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: latex, compiler: 'pdflatex' })
-      })
+      const res = await fetch(
+        'https://latex-compiler-backend-production.up.railway.app/compile',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: latex, compiler: 'pdflatex' })
+        }
+      )
 
       if (!res.ok || res.headers.get('Content-Type') !== 'application/pdf') {
         const err = await res.text()
@@ -132,21 +175,63 @@ export default function ResumeBuilderPage () {
     generatePdfUrl()
   }, [state])
 
-  const handleSave = async ()=>{
-    const res = await fetch('/api/save',{
+  const handleSave = async () => {
+    if (status !== 'authenticated' || !email) {
+      alert('You must be signed in to save your resume.')
+      return
+    }
+
+    const res = await fetch('/api/save', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        latexCode: latexCode,
-      }),
+        latexCode,
+        userId: email
+      })
     })
 
-    const data = await res.json();
-    if (data.success) {
-      console.log('Resume saved successfully: ', data.resume);
+    const contentType = res.headers.get('content-type')
+    if (!res.ok || !contentType?.includes('application/json')) {
+      const text = await res.text()
+      console.error('Unexpected response:', text)
+      return
     }
-    else {
-      console.log('Failed to save resume: ', data.error);
+
+    const data = await res.json()
+    if (data.success) {
+      console.log('Resume saved successfully:', data.resume)
+    } else {
+      console.log('Failed to save resume:', data.error)
+    }
+  }
+
+  const handleAIImprove = async type => {
+    try {
+      const section = state[type] // state.projects or state.experience
+
+      const originalPoints = []
+      const indexMap = [] // To keep track of which point belongs to which section
+
+      section.forEach((entry, sectionIndex) => {
+        entry.points.forEach((point, pointIndex) => {
+          originalPoints.push(point)
+          indexMap.push({ sectionIndex, pointIndex })
+        })
+      })
+
+      const improved = await improvePoints(type, originalPoints)
+
+      setImprovedPoints(
+        improved.map((text, i) => ({
+          ...indexMap[i],
+          text
+        }))
+      )
+
+      setAIImprovementType(type)
+      setShowModal(true)
+    } catch (error) {
+      console.log('Error:', error)
     }
   }
 
@@ -419,6 +504,15 @@ export default function ResumeBuilderPage () {
                     Delete
                   </button>
                 )}
+                <button
+                  className='bg-green-400 hover:bg-green-500 p-2 rounded-sm'
+                  onClick={() => {
+                    setAIImprovementType('experience')
+                    handleAIImprove('experience')
+                  }}
+                >
+                  Improve with AI
+                </button>
               </div>
             ))}
             <button
@@ -443,6 +537,12 @@ export default function ResumeBuilderPage () {
               >
                 Generate Resume
               </button>
+              <button
+                onClick={handleSave}
+                className='bg-blue-400 hover:bg-blue-500 p-2 rounded-sm'
+              >
+                Save the resume
+              </button>
             </div>
           </>
         )}
@@ -458,6 +558,57 @@ export default function ResumeBuilderPage () {
         )}
         <a href={pdfUrl}>Let's go</a>
       </div>
+      {showModal && (
+        <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50'>
+          <div className='bg-white p-6 rounded w-[600px] max-h-[80vh] overflow-y-auto'>
+            <h2 className='text-xl font-bold mb-4'>AI Suggestions</h2>
+            {improvedPoints.map((point, idx) => (
+              <div key={idx} className='mb-4'>
+                <p className='text-sm text-gray-500'>
+                  {aiImprovementType === 'projects' ? 'Project' : 'Experience'}{' '}
+                  {point.sectionIndex + 1}, Point {point.pointIndex + 1}
+                </p>
+
+                <p className='text-gray-800 line-through'>
+                  {state[aiImprovementType]?.[point.sectionIndex]?.points?.[
+                    point.pointIndex
+                  ] ?? '[Original point not found]'}
+                </p>
+                <p className='text-green-700 font-semibold'>{point.text}</p>
+                <button
+                  onClick={() => {
+                    dispatch({
+                      type:
+                        aiImprovementType === 'experience'
+                          ? 'UPDATE_EXPERIENCE_POINT'
+                          : 'UPDATE_PROJECT_POINT',
+                      projIndex:
+                        aiImprovementType === 'projects'
+                          ? point.sectionIndex
+                          : undefined,
+                      expIndex:
+                        aiImprovementType === 'experience'
+                          ? point.sectionIndex
+                          : undefined,
+                      pointIndex: point.pointIndex,
+                      payload: point.text
+                    })
+                  }}
+                  className='text-blue-600 text-sm mt-1'
+                >
+                  ✅ Apply this suggestion
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => setShowModal(false)}
+              className='mt-4 px-4 py-2 bg-red-600 text-white rounded'
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
