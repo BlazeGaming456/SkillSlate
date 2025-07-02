@@ -6,6 +6,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ['lh3.googleusercontent.com'],
+  },
   experimental: {
     serverComponentsExternalPackages: ["pdf-parse"],
   },

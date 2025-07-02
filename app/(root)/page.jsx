@@ -9,6 +9,7 @@ const page = () => {
       <Link href='/improve' >Improve Resume</Link>
       <Link href='/job-description' >Job Description</Link>
       <Link href='/dashboard' >Dashboard</Link>
+      <Link href='/github'>GitHub Review</Link>
     </div>
   )
 }

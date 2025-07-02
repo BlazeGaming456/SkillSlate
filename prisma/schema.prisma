@@ -17,9 +17,10 @@ datasource db {
 model Resume {
   id  String @id @default(cuid())
   userId  String?
-
+  name  String?
   latexCode String
   atsScore  Int?
+  data  Json?
   createdAt DateTime  @default(now())
 }
 

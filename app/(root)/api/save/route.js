@@ -1,6 +1,6 @@
-import { authOptions } from "@/components/auth";
-import { prisma } from "@/lib/db";
-import { getServerSession } from "next-auth";
+// import { authOptions } from "@/components/auth";
+import prisma from "@/lib/db";
+// import { getServerSession } from "next-auth";
 
 export async function POST(request) {
   //   const session = await getServerSession(authOptions);
@@ -21,12 +21,14 @@ export async function POST(request) {
       data: {
         latexCode: body.latexCode,
         userId: body.userId,
+        name: body.name,
+        data: body.data,
       },
     });
 
     return Response.json({ success: true, resume, email }, { status: 200 });
   } catch (error) {
-    console.log("Error: ", error);
-    return Response.json({ success: false }, { status: 500 });
+    console.error("SAVE ERROR:", error);
+  return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
