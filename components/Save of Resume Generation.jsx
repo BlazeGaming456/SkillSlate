@@ -4,6 +4,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { generateLatexFromState } from '@/components/resumePreview'
 import { improvePoints } from '@/components/improvePoints'
 import { useSession } from 'next-auth/react'
+import ReactMarkdown from 'react-markdown'
 
 function resumeReducer (state, action) {
   switch (action.type) {
@@ -127,8 +128,11 @@ const initialState = {
   skills: [{ type: '', tools: '' }]
 }
 
-export default function ResumeBuilderPage () {
-  const [state, dispatch] = useReducer(resumeReducer, initialState)
+export default function ResumeForm ({ initialData = null }) {
+  const [state, dispatch] = useReducer(
+    resumeReducer,
+    initialData || initialState
+  )
   const [step, setStep] = useState(1)
   const [pdfUrl, setPdfUrl] = useState('')
   const [latexCode, setLatexCode] = useState('')
@@ -136,11 +140,16 @@ export default function ResumeBuilderPage () {
   const [showModal, setShowModal] = useState(false)
   const [aiImprovementType, setAIImprovementType] = useState('')
   const { data: session, status } = useSession()
-  console.log(status)
   const email = session?.user?.email
   if (status === 'authenticated') {
     console.log(email)
   }
+
+  const [aiExperiencePrompt, setAiExperiencePrompt] = useState('')
+  const [aiExperienceResponse, setAiExperienceResponse] = useState('')
+
+  const [aiSkillsPrompt, setAiSkillsPrompt] = useState('')
+  const [aiSkillsResponse, setAiSkillsResponse] = useState('')
 
   //Generating the live resume preview url
   //useEffect doesn't directly support sdync, so you have to create a function within it
@@ -175,6 +184,46 @@ export default function ResumeBuilderPage () {
     generatePdfUrl()
   }, [state])
 
+  const handleExperienceAi = async () => {
+    if (aiExperiencePrompt == '') {
+      console.log('No prompt entered!')
+      return
+    }
+
+    const res = await fetch('/api/ai-experience', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: aiExperiencePrompt
+      })
+    })
+
+    const text = await res.json()
+
+    console.log(text.result)
+    setAiExperienceResponse(text.result)
+  }
+
+  const handleSkillsAi = async () => {
+    if (aiSkillsPrompt == '') {
+      console.log('No prompt entered!')
+      return
+    }
+
+    const res = await fetch('/api/ai-Skills', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: aiSkillsPrompt
+      })
+    })
+
+    const text = await res.json()
+
+    console.log(text.result)
+    setAiSkillsResponse(text.result)
+  }
+
   const handleSave = async () => {
     if (status !== 'authenticated' || !email) {
       alert('You must be signed in to save your resume.')
@@ -186,7 +235,9 @@ export default function ResumeBuilderPage () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         latexCode,
-        userId: email
+        userId: email,
+        data: state,
+        name: state.name
       })
     })
 
@@ -424,6 +475,18 @@ export default function ResumeBuilderPage () {
             >
               + Add Skill
             </button>
+            <div>
+              <textarea
+                onChange={e => setAiExperiencePrompt(e.target.value)}
+              ></textarea>
+              <ReactMarkdown>{aiExperienceResponse}</ReactMarkdown>
+              <button
+                onClick={handleExperienceAi}
+                className='p-2 bg-blue-400 hover:bg-blue-500 hover:cursor-pointer'
+              >
+                Generate
+              </button>
+            </div>
             <div className='mt-4 flex gap-4'>
               <button
                 onClick={() => setStep(2)}
@@ -521,6 +584,20 @@ export default function ResumeBuilderPage () {
             >
               + Add Experience
             </button>
+
+            <div>
+              <textarea
+                onChange={e => setAiExperiencePrompt(e.target.value)}
+              ></textarea>
+              <ReactMarkdown>{aiExperienceResponse}</ReactMarkdown>
+              <button
+                onClick={handleExperienceAi}
+                className='p-2 bg-blue-400 hover:bg-blue-500 hover:cursor-pointer'
+              >
+                Generate
+              </button>
+            </div>
+
             <div className='mt-4 flex gap-4'>
               <button
                 onClick={() => setStep(3)}
