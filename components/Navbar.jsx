@@ -10,8 +10,8 @@ const Navbar = () => {
   const defaultImage = '/default-profile.png' // Store this in /public folder
 
   return (
-    <div className='flex items-center justify-between p-4 bg-white shadow-md'>
-      <Link href='/' className='hover:cursor-pointer'><span className='text-xl font-bold'>Skill Slate!</span></Link>
+    <div className='flex items-center justify-between p-4 h-14 bg-[#1c1c1c]'>
+      {/* <Link href='/' className='hover:cursor-pointer'><span className='text-xl font-bold'>Skill Slate!</span></Link>
       <ul className='flex space-x-4'>
         <li><Link href='/generate/resume' className='hover:cursor-pointer'>Generate Resume</Link></li>
         <li><Link href='/generate/cover-letter' className='hover:cursor-pointer'>Generate Cover Letter</Link></li>
@@ -19,6 +19,34 @@ const Navbar = () => {
       </ul>
       <div className='rounded-full overflow-hidden'>
         <Link href='/login' className='hover:cursor-pointer'>
+            <Image
+            src={
+                status === 'authenticated' && session.user?.image
+                ? session.user.image
+                : defaultImage
+            }
+            alt='Profile'
+            width={40}
+            height={40}
+            />
+        </Link>
+      </div> */}
+      <Link href='/'>
+        <span className='font-mono text-white hover:text-[#00f5a0] hover:cursor-pointer text-2xl p-2'>Skill Slate</span>
+      </Link>
+      <ul className='flex'>
+        <li>
+          Features
+        </li>
+        <li>
+          Pricing
+        </li>
+        <li>
+          FAQs
+        </li>
+      </ul>
+      <div className='rounded-full overflow-hidden'>
+        <Link href='/login' className='hover:cursor-pointer hover:opacity-80 bg-white'>
             <Image
             src={
                 status === 'authenticated' && session.user?.image
