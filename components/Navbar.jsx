@@ -32,17 +32,17 @@ const Navbar = () => {
         </Link>
       </div> */}
       <Link href='/'>
-        <span className='font-mono text-white hover:text-[#00f5a0] hover:cursor-pointer text-2xl p-2'>Skill Slate</span>
+        <span className='font-sans font-bold text-white hover:text-[#00f5a0] hover:cursor-pointer text-2xl p-2'>Skill Slate</span>
       </Link>
-      <ul className='flex'>
+      <ul className='flex text-white font-mono gap-x-8 text-lg'>
         <li>
-          Features
+          <a href="#features">Features</a>
         </li>
         <li>
-          Pricing
+          <a href="#prices">Pricing</a>
         </li>
         <li>
-          FAQs
+          <a href="#faq">FAQs</a>
         </li>
       </ul>
       <div className='rounded-full overflow-hidden'>

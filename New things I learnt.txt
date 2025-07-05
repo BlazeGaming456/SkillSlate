@@ -4,3 +4,9 @@ New Topicss:
 2. Cheerio - Used to scrape websites and get data like job description, etc.
 
 3. Puppeteer - Used to travel to the specified pages, and assist cheerio.
+
+New Frontend Stuff -
+1. TypeWriter
+2. Storing things in an array and iterating over it
+3. Scrolling to a specific part after clicking a link
+4. Smooth  transition between sections using Framer Motion

@@ -11,6 +11,12 @@ module.exports = {
         sans: ["var(--font-open-sans)", "sans-serif"],
         mono: ["var(--font-ibm-plex-mono)", "monospace"],
       },
+      scrollBehavior: ['responsive'],
+    },
+  },
+  variants: {
+    extend: {
+      scrollBehavior: ['responsive'],
     },
   },
   plugins: [],
