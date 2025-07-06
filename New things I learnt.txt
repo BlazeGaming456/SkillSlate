@@ -9,4 +9,6 @@ New Frontend Stuff -
 1. TypeWriter
 2. Storing things in an array and iterating over it
 3. Scrolling to a specific part after clicking a link
-4. Smooth  transition between sections using Framer Motion
+4. Smooth transition between sections using Framer Motion
+5. motion.div and motion.button and their properties
+6. Textarea properties in ResumeForm.jsx and Improve.jsx

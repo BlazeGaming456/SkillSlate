@@ -199,6 +199,14 @@ export default function ResumeForm ({ initialData = null }) {
   const [aiSkillsPrompt, setAiSkillsPrompt] = useState('')
   const [aiSkillsResponse, setAiSkillsResponse] = useState('')
 
+  // Project AI generator
+  const [aiProjectPrompt, setAiProjectPrompt] = useState('')
+  const [aiProjectResponse, setAiProjectResponse] = useState('')
+
+  // Achievements AI generator
+  const [aiAchievementPrompt, setAiAchievementPrompt] = useState('')
+  const [aiAchievementResponse, setAiAchievementResponse] = useState('')
+
   //Generating the live resume preview url
   // useEffect doesn't directly support async, so you have to create a function within it
   useEffect(() => {
@@ -238,31 +246,6 @@ export default function ResumeForm ({ initialData = null }) {
     }
   }, [state])
 
-  // const handleGeneratePDF = async () => {
-  //   const latex = generateLatexFromState(state)
-  //   setLatexCode(latex)
-
-  //   const res = await fetch(
-  //     'https://latex-compiler-backend-production.up.railway.app/compile',
-  //     {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ code: latex, compiler: 'pdflatex' })
-  //     }
-  //   )
-
-  //   if (!res.ok || res.headers.get('Content-Type') !== 'application/pdf') {
-  //     const err = await res.text()
-  //     console.error('LaTeX Compile Error:\n', err)
-  //     alert('LaTeX error! Check console for details.')
-  //     return
-  //   }
-
-  //   const blob = await res.blob()
-  //   const genPdfUrl = URL.createObjectURL(blob)
-  //   setPdfUrl(genPdfUrl)
-  // }
-
   const handleExperienceAi = async () => {
     if (aiExperiencePrompt == '') {
       console.log('No prompt entered!')
@@ -289,7 +272,7 @@ export default function ResumeForm ({ initialData = null }) {
       return
     }
 
-    const res = await fetch('/api/ai-Skills', {
+    const res = await fetch('/api/ai-skills', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -301,6 +284,34 @@ export default function ResumeForm ({ initialData = null }) {
 
     console.log(text.result)
     setAiSkillsResponse(text.result)
+  }
+
+  const handleProjectAi = async () => {
+    if (aiProjectPrompt == '') {
+      console.log('No prompt entered!')
+      return
+    }
+    const res = await fetch('/api/ai-projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: aiProjectPrompt })
+    })
+    const text = await res.json()
+    setAiProjectResponse(text.result)
+  }
+
+  const handleAchievementAi = async () => {
+    if (aiAchievementPrompt == '') {
+      console.log('No prompt entered!')
+      return
+    }
+    const res = await fetch('/api/ai-achievements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: aiAchievementPrompt })
+    })
+    const text = await res.json()
+    setAiAchievementResponse(text.result)
   }
 
   const handleSave = async () => {
@@ -391,7 +402,7 @@ export default function ResumeForm ({ initialData = null }) {
     ))
 
   return (
-    <div className='flex min-h-screen bg-[#1c1c1c]'>
+    <div className='flex min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a]'>
       <div className='w-1/2 p-10 space-y-8 bg-[#2a2a2a] shadow-2xl border-r border-gray-700'>
         <h1 className='text-4xl font-bold text-white font-mono'>
           Create Your Resume
@@ -718,19 +729,35 @@ export default function ResumeForm ({ initialData = null }) {
                     placeholder='Describe your role and responsibilities...'
                   />
                   {aiExperienceResponse && (
-                    <div className='mt-4 p-4 bg-[#2a2a2a] rounded-lg border border-gray-600'>
-                      <ReactMarkdown
-                        components={{
-                          p: ({ node, ...props }) => (
-                            <p
-                              className='text-gray-300 prose prose-invert'
-                              {...props}
-                            />
-                          )
-                        }}
-                      >
-                        {aiExperienceResponse}
-                      </ReactMarkdown>
+                    <div className='mt-4 p-4 bg-[#232323] rounded-lg border border-gray-600'>
+                      <div className='space-y-4'>
+                        {aiExperienceResponse
+                          .split(/\n(?=[^\n])/)
+                          .map((section, idx) => (
+                            <div key={idx} className='mb-2'>
+                              {section
+                                .split(/\n/)
+                                .filter(line => line.trim() !== '')
+                                .map((line, i) => (
+                                  <div
+                                    key={i}
+                                    className={
+                                      line.trim().startsWith('•') ||
+                                      line.trim().startsWith('-')
+                                        ? 'pl-4 text-[#00f5a0] font-mono'
+                                        : 'font-bold text-gray-100 font-mono mt-2'
+                                    }
+                                  >
+                                    {line}
+                                  </div>
+                                ))}
+                              {idx !==
+                                aiExperienceResponse.split(/\n(?=[^\n])/)
+                                  .length -
+                                  1 && <hr className='my-3 border-gray-700' />}
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   )}
                   <motion.button
@@ -866,6 +893,55 @@ export default function ResumeForm ({ initialData = null }) {
                 >
                   + Add Project
                 </motion.button>
+                <div className='mt-6 p-6 bg-[#3a3a3a] rounded-xl border border-gray-600'>
+                  <h3 className='text-white font-mono text-lg mb-4'>
+                    AI Project Generator
+                  </h3>
+                  <textarea
+                    onChange={e => setAiProjectPrompt(e.target.value)}
+                    className='bg-[#2a2a2a] border border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#00f5a0] focus:border-[#00f5a0] focus:outline-none text-white placeholder-gray-400 transition-all duration-200 w-full h-24 resize-none'
+                    placeholder='Describe your project, technologies, and impact...'
+                  />
+                  {aiProjectResponse && (
+                    <div className='mt-4 p-4 bg-[#232323] rounded-lg border border-gray-600'>
+                      <div className='space-y-4'>
+                        {aiProjectResponse
+                          .split(/\n(?=[^\n])/)
+                          .map((section, idx) => (
+                            <div key={idx} className='mb-2'>
+                              {section
+                                .split(/\n/)
+                                .filter(line => line.trim() !== '')
+                                .map((line, i) => (
+                                  <div
+                                    key={i}
+                                    className={
+                                      line.trim().startsWith('•') ||
+                                      line.trim().startsWith('-')
+                                        ? 'pl-4 text-[#00f5a0] font-mono'
+                                        : 'font-bold text-gray-100 font-mono mt-2'
+                                    }
+                                  >
+                                    {line}
+                                  </div>
+                                ))}
+                              {idx !==
+                                aiProjectResponse.split(/\n(?=[^\n])/).length -
+                                  1 && <hr className='my-3 border-gray-700' />}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                  <motion.button
+                    onClick={handleProjectAi}
+                    className='bg-[#00f5a0] text-black px-6 py-3 rounded-lg hover:bg-[#00d488] transition-all duration-300 font-mono font-bold mt-4'
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Generate Project
+                  </motion.button>
+                </div>
                 <div className='mt-8 flex gap-4'>
                   <motion.button
                     onClick={() => setStep(3)}
@@ -946,6 +1022,56 @@ export default function ResumeForm ({ initialData = null }) {
                 >
                   + Add Achievement
                 </motion.button>
+                <div className='mt-6 p-6 bg-[#3a3a3a] rounded-xl border border-gray-600'>
+                  <h3 className='text-white font-mono text-lg mb-4'>
+                    AI Achievements Generator
+                  </h3>
+                  <textarea
+                    onChange={e => setAiAchievementPrompt(e.target.value)}
+                    className='bg-[#2a2a2a] border border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#00f5a0] focus:border-[#00f5a0] focus:outline-none text-white placeholder-gray-400 transition-all duration-200 w-full h-24 resize-none'
+                    placeholder='Describe your achievement, award, or recognition...'
+                  />
+                  {aiAchievementResponse && (
+                    <div className='mt-4 p-4 bg-[#232323] rounded-lg border border-gray-600'>
+                      <div className='space-y-4'>
+                        {aiAchievementResponse
+                          .split(/\n(?=[^\n])/)
+                          .map((section, idx) => (
+                            <div key={idx} className='mb-2'>
+                              {section
+                                .split(/\n/)
+                                .filter(line => line.trim() !== '')
+                                .map((line, i) => (
+                                  <div
+                                    key={i}
+                                    className={
+                                      line.trim().startsWith('•') ||
+                                      line.trim().startsWith('-')
+                                        ? 'pl-4 text-[#00f5a0] font-mono'
+                                        : 'font-bold text-gray-100 font-mono mt-2'
+                                    }
+                                  >
+                                    {line}
+                                  </div>
+                                ))}
+                              {idx !==
+                                aiAchievementResponse.split(/\n(?=[^\n])/)
+                                  .length -
+                                  1 && <hr className='my-3 border-gray-700' />}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                  <motion.button
+                    onClick={handleAchievementAi}
+                    className='bg-[#00f5a0] text-black px-6 py-3 rounded-lg hover:bg-[#00d488] transition-all duration-300 font-mono font-bold mt-4'
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Generate Achievement
+                  </motion.button>
+                </div>
                 <div className='mt-8 flex gap-4'>
                   <motion.button
                     onClick={() => setStep(4)}
@@ -1050,19 +1176,34 @@ export default function ResumeForm ({ initialData = null }) {
                     placeholder='Describe your skills and experience...'
                   />
                   {aiSkillsResponse && (
-                    <div className='mt-4 p-4 bg-[#2a2a2a] rounded-lg border border-gray-600'>
-                      <ReactMarkdown
-                        components={{
-                          p: ({ node, ...props }) => (
-                            <p
-                              className='text-gray-300 prose prose-invert'
-                              {...props}
-                            />
-                          )
-                        }}
-                      >
-                        {aiSkillsResponse}
-                      </ReactMarkdown>
+                    <div className='mt-4 p-4 bg-[#232323] rounded-lg border border-gray-600'>
+                      <div className='space-y-4'>
+                        {aiSkillsResponse
+                          .split(/\n(?=[^\n])/)
+                          .map((section, idx) => (
+                            <div key={idx} className='mb-2'>
+                              {section
+                                .split(/\n/)
+                                .filter(line => line.trim() !== '')
+                                .map((line, i) => (
+                                  <div
+                                    key={i}
+                                    className={
+                                      line.trim().startsWith('•') ||
+                                      line.trim().startsWith('-')
+                                        ? 'pl-4 text-[#00f5a0] font-mono'
+                                        : 'font-bold text-gray-100 font-mono mt-2'
+                                    }
+                                  >
+                                    {line}
+                                  </div>
+                                ))}
+                              {idx !==
+                                aiSkillsResponse.split(/\n(?=[^\n])/).length -
+                                  1 && <hr className='my-3 border-gray-700' />}
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   )}
                   <motion.button
@@ -1213,8 +1354,12 @@ export default function ResumeForm ({ initialData = null }) {
                 }`}
               >
                 <div className='bg-[#2a2a2a] p-4 rounded-xl border border-gray-600 mb-4'>
-                  <h3 className='text-white font-mono text-lg mb-2'>Live Preview</h3>
-                  <p className='text-gray-400 text-sm'>Your resume updates in real-time</p>
+                  <h3 className='text-white font-mono text-lg mb-2'>
+                    Live Preview
+                  </h3>
+                  <p className='text-gray-400 text-sm'>
+                    Your resume updates in real-time
+                  </p>
                 </div>
                 <div className='bg-white rounded-xl shadow-2xl overflow-hidden'>
                   <iframe
@@ -1228,36 +1373,47 @@ export default function ResumeForm ({ initialData = null }) {
             )
           )}
         </div>
-        
+
         {showModal && (
           <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center z-50 backdrop-blur-sm'>
-            <motion.div 
+            <motion.div
               className='bg-[#2a2a2a] p-8 rounded-2xl w-[700px] max-h-[85vh] overflow-y-auto border border-gray-600 shadow-2xl'
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
               <div className='flex items-center space-x-3 mb-6'>
-                <div className='w-8 h-8 bg-[#00f5a0] rounded-full flex items-center justify-center text-black font-bold'>✨</div>
-                <h2 className='text-2xl font-bold text-white font-mono'>AI Suggestions</h2>
+                <div className='w-8 h-8 bg-[#00f5a0] rounded-full flex items-center justify-center text-black font-bold'>
+                  ✨
+                </div>
+                <h2 className='text-2xl font-bold text-white font-mono'>
+                  AI Suggestions
+                </h2>
               </div>
               <div className='space-y-6'>
                 {improvedPoints.map((point, idx) => (
-                  <motion.div 
-                    key={idx} 
+                  <motion.div
+                    key={idx}
                     className='p-4 bg-[#3a3a3a] rounded-xl border border-gray-600'
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                   >
                     <p className='text-sm text-gray-400 font-mono mb-3'>
-                      {aiImprovementType === 'projects' ? 'Project' : 'Experience'} {point.sectionIndex + 1}, Point {point.pointIndex + 1}
+                      {aiImprovementType === 'projects'
+                        ? 'Project'
+                        : 'Experience'}{' '}
+                      {point.sectionIndex + 1}, Point {point.pointIndex + 1}
                     </p>
                     <div className='space-y-2'>
                       <p className='text-gray-400 line-through text-sm'>
-                        {state[aiImprovementType]?.[point.sectionIndex]?.points?.[point.pointIndex] ?? '[Original point not found]'}
+                        {state[aiImprovementType]?.[point.sectionIndex]
+                          ?.points?.[point.pointIndex] ??
+                          '[Original point not found]'}
                       </p>
-                      <p className='text-[#00f5a0] font-semibold'>{point.text}</p>
+                      <p className='text-[#00f5a0] font-semibold'>
+                        {point.text}
+                      </p>
                     </div>
                     <motion.button
                       onClick={() => {

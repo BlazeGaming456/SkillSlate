@@ -1,46 +1,63 @@
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 
-export async function POST (request) {
-    const {prompt, jobDetails, extraJD } = await request.json();
+export async function POST(request) {
+  const { prompt, jobDetails, extraJD } = await request.json();
 
-    console.log('Job Details: ', jobDetails);
-    console.log('Extra Information: ', extraJD);
+  // Helper to call Gemini
+  async function askGemini(prompt) {
+    const response = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt,
+    });
+    return response.text;
+  }
 
-    try {
-        const response = await generateText({
-            model: google('gemini-2.0-flash-001'),
-            prompt: `You're a Resume Reviewer. You're supposed to review the given resume and give an ATS score, and give it in the form of sections, that you can decide.
-            I recommend clarity, use of buzzwords, visibility, relevance of projects and skills, etc.
-            Say good points and then the bad points.
-            
-            This is the parsed text from the resume:
-            ${prompt}
-            
-            Rules:
-            1. Your response will be directly given to the user so create it accordingly, with no refernce to me.
-            2. Don't give an introduction in the beginning of the response. Directly go to the points.
-            3. The response should be given with exact answers and numbers, and less like a conversation.
-            4. The text is going to be directly displayed onto the website, and there will be no formatting. So remove the stars, etc., and add proper spacing.
-            
-            Also, the user may share a job description as below. These may or may not be specified, so don't mention it if not mentioned.
-            Analyse the resume, and make suggestions based on this job description.
-            The following has been taken from the URL provided by user, and may or may not be accurate:
-            type: ${extraJD.type}
-            title: ${extraJD.title}
-            description: ${extraJD.description}
-            skills: ${extraJD.skills}
-            
-            The next is the job description given by the user or pasted from the website:
-            ${jobDetails}`
-        });
-
-        return Response.json({success: true, result: response.text}, {status: 200});
+  try {
+    // 1. ATS Score
+    const atsScorePrompt = `Read the following resume text and give only a single number out of 100 as the ATS score. No explanation, just the number.\nResume: ${prompt}`;
+    // 2. Pros
+    const prosPrompt = `Read the following resume text and list the good points (pros) in clear bullet points.\nResume: ${prompt}`;
+    // 3. Cons
+    const consPrompt = `Read the following resume text and list the bad points (cons) in clear bullet points.\nResume: ${prompt}`;
+    // 4. Job Match & Improvements (if job description provided)
+    let jobMatch = null;
+    let jobImprovements = null;
+    let jobMatchPrompt = null;
+    let jobImprovementsPrompt = null;
+    if (jobDetails && jobDetails.trim() !== "") {
+      jobMatchPrompt = `Given the following resume and job description, rate how well the resume matches the job on a scale of 0-100. Give only the number.\nResume: ${prompt}\nJob Description: ${jobDetails}`;
+      jobImprovementsPrompt = `Given the following resume and job description, suggest specific improvements to the resume to better match the job. List as bullet points.\nResume: ${prompt}\nJob Description: ${jobDetails}`;
     }
-    catch (error) {
-        console.error("Error: ", error);
-        alert("Error Occured with Prompt")
 
-        return Response.json({success: false, error: error}, {status: 500});
-    }
+    // Run all requests in parallel
+    const [atsScore, pros, cons, jobMatchScore, jobImprovementsText] =
+      await Promise.all([
+        askGemini(atsScorePrompt),
+        askGemini(prosPrompt),
+        askGemini(consPrompt),
+        jobMatchPrompt ? askGemini(jobMatchPrompt) : Promise.resolve(null),
+        jobImprovementsPrompt
+          ? askGemini(jobImprovementsPrompt)
+          : Promise.resolve(null),
+      ]);
+
+    return Response.json(
+      {
+        success: true,
+        atsScore: atsScore.trim(),
+        pros,
+        cons,
+        jobMatch: jobMatchScore ? jobMatchScore.trim() : null,
+        jobImprovements: jobImprovementsText,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error: ", error);
+    return Response.json(
+      { success: false, error: error.toString() },
+      { status: 500 }
+    );
+  }
 }

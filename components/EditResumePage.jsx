@@ -35,7 +35,6 @@ export default function EditResumePage ({ id }) {
 
   return (
     <div className='p-6'>
-      <h1 className='text-2xl font-bold mb-4'>Edit Resume: {resume.name}</h1>
       <ResumeForm initialData={resume.data} resumeId={resume.id} />
     </div>
   )
