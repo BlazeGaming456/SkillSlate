@@ -413,8 +413,8 @@ export default function ResumeForm ({ initialData = null }) {
     ))
 
   return (
-    <div className='flex min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a]'>
-      <div className='w-1/2 p-10 space-y-8 bg-[#2a2a2a] shadow-2xl border-r border-gray-700'>
+    <div className='flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a]'>
+      <div className='w-full md:w-1/2 p-10 space-y-8 bg-[#2a2a2a] shadow-2xl border-r border-gray-700'>
         <h1 className='text-4xl font-bold text-white font-mono'>
           Create Your Resume
         </h1>
@@ -1356,7 +1356,7 @@ export default function ResumeForm ({ initialData = null }) {
       </div>
 
       {/* Right Side - Generating PDF */}
-      <div className='w-1/2 p-6 bg-[#1c1c1c]'>
+      <div className='w-full md:w-1/2 p-6 bg-[#1c1c1c]'>
         <div className='sticky top-6'>
           {loading ? (
             <div className='w-full h-[90vh] flex items-center justify-center'>
@@ -1370,26 +1370,50 @@ export default function ResumeForm ({ initialData = null }) {
           ) : (
             state !== initialState &&
             pdfUrl && (
-              <div
-                className={`transition-all duration-500 ease-in-out ${
-                  loading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-                }`}
-              >
-                <div className='bg-[#2a2a2a] p-4 rounded-xl border border-gray-600 mb-4'>
-                  <h3 className='text-white font-mono text-lg mb-2'>
-                    Live Preview
-                  </h3>
-                  <p className='text-gray-400 text-sm'>
-                    Your resume updates in real-time
-                  </p>
+              <div className='mb-4'>
+                {/* Desktop: Show Live Preview text and iframe */}
+                <div className='hidden md:block'>
+                  <div className='bg-[#2a2a2a] p-4 rounded-xl border border-gray-600 mb-4'>
+                    <h3 className='text-white font-mono text-lg mb-2'>
+                      Live Preview
+                    </h3>
+                    <p className='text-gray-400 text-sm'>
+                      Your resume updates in real-time
+                    </p>
+                  </div>
+                  <div className='bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-300 min-h-[200px] flex items-center justify-center'>
+                    {pdfUrl ? (
+                      <iframe
+                        src={pdfUrl}
+                        className='w-full h-[85vh]'
+                        title='PDF Preview'
+                        type='application/pdf'
+                      />
+                    ) : (
+                      <div className='text-gray-400 text-center font-mono p-8'>
+                        PDF preview is not available. Please generate your
+                        resume to see the live preview.
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className='bg-white rounded-xl shadow-2xl overflow-hidden'>
-                  <iframe
-                    src={pdfUrl}
-                    className='w-full h-[85vh]'
-                    title='PDF Preview'
-                    type='application/pdf'
-                  />
+                {/* Mobile: Show only a button/link to open PDF if available */}
+                <div className='block md:hidden'>
+                  {pdfUrl ? (
+                    <a
+                      href={pdfUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='w-full block text-center bg-[#00f5a0] text-black font-bold font-mono rounded-lg py-4 px-6 shadow-lg hover:bg-[#00d488] transition-all duration-300'
+                    >
+                      Open PDF Resume Preview
+                    </a>
+                  ) : (
+                    <div className='text-gray-400 text-center font-mono p-8'>
+                      PDF preview is not available. Please generate your resume
+                      to see the preview.
+                    </div>
+                  )}
                 </div>
               </div>
             )

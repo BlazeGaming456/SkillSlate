@@ -127,9 +127,9 @@ const Page = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-300 p-6'>
-      <div className='flex h-full bg-white shadow-2xl overflow-hidden'>
-        <div className='w-1/2 p-10 space-y-8 bg-[#2a2a2a] overflow-y-auto max-h-screen'>
+    <div className='min-h-screen bg-gray-300 p-2'>
+      <div className='flex flex-col md:flex-row h-full bg-white shadow-2xl overflow-hidden'>
+        <div className='w-full md:w-1/2 p-4 md:p-10 space-y-8 bg-[#2a2a2a] overflow-y-auto max-h-[60vh] md:max-h-screen'>
           <h1 className='text-4xl font-bold text-white font-mono'>
             Create Your Cover Letter
           </h1>
@@ -388,7 +388,7 @@ const Page = () => {
         </div>
 
         {/* Right Side - Static */}
-        <div className='w-1/2 p-6 bg-[#1c1c1c]'>
+        <div className='w-full md:w-1/2 p-6 bg-[#1c1c1c]'>
           <div className='flex items-center justify-center h-full'>
             <div className='text-center max-w-md'>
               <div className='w-20 h-20 bg-[#00f5a0] rounded-full flex items-center justify-center mx-auto mb-6'>

@@ -3,7 +3,15 @@
 > **AI-powered Resume & Cover Letter Generator**  
 > Built with Next.js, Tailwind CSS, Gemini API, pdf-parse, Prisma, and more.
 
-[Live Demo](https://your-live-link.com)
+You can visit the live page at https://your-live-link.com
+
+You can see the video demo of the page at https://youtu.be/LKxXYOuIXr4
+
+---
+
+## Screenshots
+
+![alt text](image.png)
 
 ---
 

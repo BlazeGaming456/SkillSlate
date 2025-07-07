@@ -136,20 +136,17 @@ export default function Features () {
   const [hoveredIdx, setHoveredIdx] = useState(null)
   return (
     <div className='w-full max-w-6xl mx-auto py-16'>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className='font-mono font-bold text-3xl md:text-4xl mb-12 text-gray-900 text-center'
-      >
+      <motion.h2 className='hidden md:block font-mono font-bold text-3xl md:text-4xl mb-12 text-gray-900 text-center'>
+        Our Features
+      </motion.h2>
+      <motion.h2 className='block md:hidden font-mono font-bold text-3xl md:text-4xl mb-12 text-gray-900 text-center'>
         Our Features
       </motion.h2>
       <div className='grid grid-cols-1 gap-10'>
-        {features.map((feature, idx) => {
-          const color = colorMap[feature.color]
-          return (
+        {features.map((feature, idx) => (
+          <React.Fragment key={feature.title}>
             <motion.div
-              key={feature.title}
+              className='hidden md:block'
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
@@ -159,10 +156,17 @@ export default function Features () {
                 className='group block focus:outline-none'
               >
                 <motion.div
-                  className={`relative flex flex-col md:flex-row items-stretch rounded-3xl shadow-xl border-2 ${color.border} ${color.bg} transition-all duration-300 overflow-hidden cursor-pointer`}
+                  className={`relative flex flex-col md:flex-row items-stretch rounded-3xl shadow-xl border-2 ${
+                    colorMap[feature.color].border
+                  } ${
+                    colorMap[feature.color].bg
+                  } transition-all duration-300 overflow-hidden cursor-pointer`}
                   style={{
                     minHeight: 220,
-                    boxShadow: hoveredIdx === idx ? color.glow : undefined
+                    boxShadow:
+                      hoveredIdx === idx
+                        ? colorMap[feature.color].glow
+                        : undefined
                   }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
@@ -171,7 +175,9 @@ export default function Features () {
                   <div className='flex-1 flex flex-col items-start justify-start px-8 pt-8 pb-6 md:py-10'>
                     <div className='flex items-center gap-3 mb-2'>
                       <span
-                        className={`inline-block w-3 h-3 rounded-full ${color.dot}`}
+                        className={`inline-block w-3 h-3 rounded-full ${
+                          colorMap[feature.color].dot
+                        }`}
                       ></span>
                       <span className='uppercase text-xs font-mono tracking-widest text-gray-500'>
                         Feature
@@ -186,7 +192,7 @@ export default function Features () {
                   </div>
                   {/* Right: Icon */}
                   <div className='flex-shrink-0 flex items-center justify-center w-full md:w-[340px] h-[180px] md:h-[220px] relative'>
-                    {color.icon}
+                    {colorMap[feature.color].icon}
                   </div>
                   {/* Animated Arrow */}
                   <motion.div
@@ -197,7 +203,9 @@ export default function Features () {
                         : { opacity: 0, x: -20 }
                     }
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className={`absolute bottom-6 left-6 bg-white rounded-full shadow-md border-2 border-gray-200 flex items-center justify-center w-10 h-10 ${color.arrow} text-2xl`}
+                    className={`absolute bottom-6 left-6 bg-white rounded-full shadow-md border-2 border-gray-200 flex items-center justify-center w-10 h-10 ${
+                      colorMap[feature.color].arrow
+                    } text-2xl`}
                     style={{ pointerEvents: 'none' }}
                   >
                     &rarr;
@@ -205,8 +213,49 @@ export default function Features () {
                 </motion.div>
               </Link>
             </motion.div>
-          )
-        })}
+            <div className='block md:hidden'>
+              <Link
+                href={feature.link}
+                className='group block focus:outline-none'
+              >
+                <div
+                  className={`relative flex flex-col items-stretch rounded-3xl shadow-xl border-2 ${
+                    colorMap[feature.color].border
+                  } ${
+                    colorMap[feature.color].bg
+                  } transition-all duration-300 overflow-hidden cursor-pointer`}
+                  style={{
+                    minHeight: 220
+                  }}
+                >
+                  {/* Left: Text */}
+                  <div className='flex-1 flex flex-col items-start justify-start px-8 pt-8 pb-6'>
+                    <div className='flex items-center gap-3 mb-2'>
+                      <span
+                        className={`inline-block w-3 h-3 rounded-full ${
+                          colorMap[feature.color].dot
+                        }`}
+                      ></span>
+                      <span className='uppercase text-xs font-mono tracking-widest text-gray-500'>
+                        Feature
+                      </span>
+                    </div>
+                    <h3 className='text-2xl font-extrabold font-mono mb-3 text-gray-900'>
+                      {feature.title}
+                    </h3>
+                    <p className='text-gray-700 font-sans text-lg'>
+                      {feature.subtitle}
+                    </p>
+                  </div>
+                  {/* Right: Icon */}
+                  <div className='flex-shrink-0 flex items-center justify-center w-full h-[180px] relative'>
+                    {colorMap[feature.color].icon}
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </React.Fragment>
+        ))}
       </div>
     </div>
   )

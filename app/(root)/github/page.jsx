@@ -47,7 +47,7 @@ const page = () => {
   }
 
   return (
-    <div className='p-6 min-h-screen bg-slate-300'>
+    <div className='p-2 min-h-screen bg-slate-300'>
       {/* Form Section */}
       <AnimatePresence>
         <motion.div
@@ -56,7 +56,7 @@ const page = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05, ease: 'easeInOut', duration: 0.6 }}
         >
-          <div className='bg-[#3a3a3a] p-6 w-1/3 rounded-xl border-gray-600'>
+          <div className='bg-[#3a3a3a] p-4 w-full max-w-lg rounded-xl border-gray-600 mx-auto'>
             <h1 className='font-mono text-white text-center text-2xl mb-3 font-bold'>
               GitHub AI Review
             </h1>

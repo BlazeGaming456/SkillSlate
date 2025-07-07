@@ -110,12 +110,7 @@ export default function ImproveResume () {
   }
 
   return (
-    <motion.div
-      className='min-h-screen bg-gray-300 mx-auto p-6 md:flex'
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.05, ease: 'easeInOut', duration: 0.4 }}
-    >
+    <motion.div className='min-h-screen bg-gray-300 mx-auto p-6 md:flex'>
       {/* Left Side - Form Section */}
       <AnimatePresence>
         <div className='bg-[#2a2a2a] p-12 w-1/2'>
