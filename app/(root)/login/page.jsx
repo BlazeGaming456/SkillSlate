@@ -1,3 +1,5 @@
+//Login page using Google OAuth with NextAuth.js and Framer Motion for animations
+
 'use client'
 
 import { signIn, signOut, useSession } from 'next-auth/react'
@@ -131,7 +133,7 @@ export default function LoginButton () {
           </motion.div>
         </div>
 
-        {/* Footer */}
+        {/* Footer Part */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

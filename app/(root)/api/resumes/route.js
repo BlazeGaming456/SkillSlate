@@ -1,3 +1,5 @@
+//Here, we retrieve the list of resumes for the authenticated user to show on the dashboard
+
 import { getToken } from "next-auth/jwt";
 import prisma from "@/lib/db";
 

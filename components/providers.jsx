@@ -1,3 +1,5 @@
+//Client component to provide session context
+
 'use client'
 
 import { SessionProvider } from "next-auth/react"

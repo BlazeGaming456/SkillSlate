@@ -1,3 +1,6 @@
+//Used to take the id and fetch all the details of the resume to be passed to the ResumeForm component
+// and then render the form to edit the resume
+
 'use client'
 
 import { useEffect, useState } from 'react'

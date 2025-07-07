@@ -1,3 +1,5 @@
+//Generates summary, pros, cons, and future steps for a GitHub profile using AI
+
 'use client'
 
 import React from 'react'
@@ -14,6 +16,7 @@ const page = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  // Function to handle form submission
   const handleSubmit = async e => {
     e.preventDefault()
     if (!username) {
@@ -45,6 +48,7 @@ const page = () => {
 
   return (
     <div className='p-6 min-h-screen bg-slate-300'>
+      {/* Form Section */}
       <AnimatePresence>
         <motion.div
           className='w-full flex justify-center'
@@ -79,9 +83,10 @@ const page = () => {
         </motion.div>
       </AnimatePresence>
 
-      {loading && <p>Analyzing your GitHub...</p>}
+      {/* Error Message */}
       {error && <p className='text-red-500'>Error: {error.message}</p>}
 
+      {/* Results Section */}
       <div className='w-full p-6 gap-6 space-y-6'>
         <div>
           {/* Summary Card */}
@@ -133,6 +138,7 @@ const page = () => {
           )}
         </div>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+          {/* Pros Card */}
           {pros && (
             <motion.div
               className='bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-800 rounded-2xl shadow-2xl border border-emerald-600 p-8 backdrop-blur-sm'

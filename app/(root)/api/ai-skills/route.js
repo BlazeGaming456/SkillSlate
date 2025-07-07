@@ -1,3 +1,6 @@
+//Generates the required skills section for a resume based on a job description using AI
+//Used in ResumeForm.jsx
+
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 

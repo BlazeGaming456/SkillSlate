@@ -1,3 +1,5 @@
+//Latex generation for cover letter
+
 const escape = (str = "") => str.toString().replace(/([#%&{}_$^~\\])/g, "\\$1");
 
 export function generateLatexFromState(state) {

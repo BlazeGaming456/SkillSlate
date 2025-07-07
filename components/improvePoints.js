@@ -1,3 +1,5 @@
+//Function to call the API to improve points based on the type and points provided
+
 export async function improvePoints(type, points) {
     const res = await fetch('/api/improve-points', {
         method: 'POST',

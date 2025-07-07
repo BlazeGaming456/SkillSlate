@@ -1,4 +1,5 @@
-// app/(root)/dashboard/page.jsx
+//Dashboard page that provides the analytics and stores the resumes to be viewed, edited or deleted as required
+
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -11,9 +12,10 @@ export default function DashboardPage () {
   const [resumes, setResumes] = useState([])
   const [loading, setLoading] = useState(true)
 
+  //Fetches resumes from the API when the user is authenticated
   const fetchResumes = async () => {
     if (status === 'authenticated') {
-      const res = await fetch('/api/resumes') // you should create this API route
+      const res = await fetch('/api/resumes')
       const data = await res.json()
       setResumes(data)
       setLoading(false)
@@ -24,12 +26,14 @@ export default function DashboardPage () {
     fetchResumes()
   }, [status])
 
+  //Handles the deletion of a resume by filtering it out from the resumes state
   const handleDelete = deletedId => {
     setResumes(prevResumes =>
       prevResumes.filter(resume => resume.id !== deletedId)
     )
   }
 
+  //Show different page depedning on the session status
   if (status === 'loading')
     return (
       <div className='min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] flex items-center justify-center'>
@@ -65,9 +69,8 @@ export default function DashboardPage () {
       </div>
     )
 
-  //Here, we first destruct the resume, replacing each with its ats score, and find the maximum score among them
+  //Calculate best and average ATS scores for analytics
   const bestScore = Math.max(...resumes.map(r => r.atsScore))
-  //Here acc is the sum varaible, r is the specific resume, and 0 referes to the initial sum value
   const avgScore =
     resumes.reduce((acc, r) => acc + r.atsScore, 0) / resumes.length
 
@@ -143,6 +146,7 @@ export default function DashboardPage () {
   )
 }
 
+//Analytics card component to display various statistics
 function AnalyticsCard ({ title, value, icon, color }) {
   return (
     <motion.div

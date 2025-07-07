@@ -1,17 +1,9 @@
-// import { authOptions } from "@/components/auth";
+//Here, we handle saving a resume with LaTeX code and user data.
+//This is used in ResumeForm.jsx
+
 import prisma from "@/lib/db";
-// import { getServerSession } from "next-auth";
 
 export async function POST(request) {
-  //   const session = await getServerSession(authOptions);
-
-  //   if (!session) {
-  //     return Response.json(
-  //       { success: false, error: "Unauthorized" },
-  //       { status: 404 }
-  //     );
-  //   }
-
   try {
     const body = await request.json();
 
@@ -29,6 +21,9 @@ export async function POST(request) {
     return Response.json({ success: true, resume, email }, { status: 200 });
   } catch (error) {
     console.error("SAVE ERROR:", error);
-  return Response.json({ success: false, error: error.message }, { status: 500 });
+    return Response.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

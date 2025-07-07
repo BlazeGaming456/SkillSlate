@@ -12,20 +12,14 @@ import { motion } from 'framer-motion'
 const page = () => {
   return (
     <div className='flex flex-col bg-primary'>
-      {/* <Link href='/generate/resume' >Generate Resume</Link>
-      <Link href='/generate/cover-letter' >Generate Cover Letter</Link>
-      <Link href='/improve' >Improve Resume</Link>
-      <Link href='/job-description' >Job Description</Link>
-      <Link href='/dashboard' >Dashboard</Link>
-      <Link href='/github'>GitHub Review</Link> */}
-
+      {/* Hero Section */}
       <section
         id='hero'
         className='bg-[#1c1c1c] min-h-screen flex items-center'
       >
         <div className='container mx-auto px-6 py-12'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
-            {/* Left: Hero Image */}
+            {/* Hero Image */}
             <div className='flex justify-center w-full'>
               <Image
                 src='/hero.svg'
@@ -36,7 +30,7 @@ const page = () => {
                 priority
               />
             </div>
-            {/* Right: Content */}
+            {/* Content */}
             <div className='flex flex-col justify-center h-full space-y-8'>
               <div className='text-white font-mono text-5xl md:text-6xl font-bold leading-tight'>
                 <h1 className='mb-2'>The fastest way to</h1>
@@ -91,18 +85,21 @@ const page = () => {
         </div>
       </section>
 
+      {/* Info Section */}
       <FadeSection>
         <section id='info' className='min-h-screen w-full bg-gray-300 flex'>
           <Info />
         </section>
       </FadeSection>
 
+      {/* Features Section */}
       <FadeSection>
         <section id='features' className='min-h-screen bg-white'>
           <Features />
         </section>
       </FadeSection>
 
+      {/* FAQ Section */}
       <FadeSection>
         <section
           id='faq'
@@ -203,6 +200,7 @@ const page = () => {
         </section>
       </FadeSection>
 
+      {/* Pricing/Sign Up Section */}
       <FadeSection>
         <section
           id='prices'

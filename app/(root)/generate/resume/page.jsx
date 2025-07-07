@@ -1,3 +1,5 @@
+//Generates a new resume form page for the user to fill out
+
 import ResumeForm from '@/components/ResumeForm'
 
 export default function GenerateResumePage () {

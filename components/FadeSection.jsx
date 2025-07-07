@@ -1,3 +1,5 @@
+//Used in the home page to create a fade-in effect for sections
+
 import { motion } from 'framer-motion'
 
 export default function FadeSection ({ children }) {

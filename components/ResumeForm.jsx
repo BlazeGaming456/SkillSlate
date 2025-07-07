@@ -1,3 +1,5 @@
+//ResumeForm component that contains the form to get the user details, convert it to LaTeX and then generate a PDF from it
+
 'use client'
 
 import React, { useEffect, useReducer, useState } from 'react'
@@ -7,6 +9,7 @@ import { useSession } from 'next-auth/react'
 import ReactMarkdown from 'react-markdown'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Reducer function to handle state updates for the resume form
 function resumeReducer (state, action) {
   switch (action.type) {
     case 'SET_NAME':
@@ -162,6 +165,7 @@ function resumeReducer (state, action) {
   }
 }
 
+// Initial state for the resume form
 const initialState = {
   name: '',
   email: '',
@@ -193,9 +197,11 @@ export default function ResumeForm ({ initialData = null }) {
   }
   const [loading, setLoading] = useState(false)
 
+  // Experience AI generator
   const [aiExperiencePrompt, setAiExperiencePrompt] = useState('')
   const [aiExperienceResponse, setAiExperienceResponse] = useState('')
 
+  // Skills AI generator
   const [aiSkillsPrompt, setAiSkillsPrompt] = useState('')
   const [aiSkillsResponse, setAiSkillsResponse] = useState('')
 
@@ -208,7 +214,7 @@ export default function ResumeForm ({ initialData = null }) {
   const [aiAchievementResponse, setAiAchievementResponse] = useState('')
 
   //Generating the live resume preview url
-  // useEffect doesn't directly support async, so you have to create a function within it
+  //useEffect doesn't directly support async, so you have to create a function within it
   useEffect(() => {
     try {
       const generatePdfUrl = async () => {
@@ -217,6 +223,7 @@ export default function ResumeForm ({ initialData = null }) {
 
         console.log(latex)
 
+        //Calls the backend to compile the LaTeX code into a PDF
         const res = await fetch(
           'https://latex-compiler-backend-production-3063.up.railway.app/compile',
           {
@@ -246,6 +253,7 @@ export default function ResumeForm ({ initialData = null }) {
     }
   }, [state])
 
+  // Function to generate points using AI for experience, skills, projects, and achievements
   const handleExperienceAi = async () => {
     if (aiExperiencePrompt == '') {
       console.log('No prompt entered!')
@@ -314,6 +322,7 @@ export default function ResumeForm ({ initialData = null }) {
     setAiAchievementResponse(text.result)
   }
 
+  //Function to save the resume in the database if the user is authenticated
   const handleSave = async () => {
     if (status !== 'authenticated' || !email) {
       alert('You must be signed in to save your resume.')
@@ -346,6 +355,7 @@ export default function ResumeForm ({ initialData = null }) {
     }
   }
 
+  // Function to handle AI improvement of points in a section (experience, projects)
   const handleAIImprove = async type => {
     try {
       const section = state[type] // state.projects or state.experience
@@ -376,6 +386,7 @@ export default function ResumeForm ({ initialData = null }) {
     }
   }
 
+  //Function to render input fields for points in a section
   const renderPointInputs = (points, sectionType, sectionIndex) =>
     (Array.isArray(points) ? points : []).map((point, i) => (
       <input
@@ -410,7 +421,9 @@ export default function ResumeForm ({ initialData = null }) {
         <p className='text-gray-300 text-lg'>
           Build a professional resume that stands out
         </p>
+        {/* Left Side - Form Steps */}
         <AnimatePresence mode='wait'>
+          {/* Personal Details */}
           {step === 1 && (
             <motion.div
               key='step1'
@@ -466,6 +479,7 @@ export default function ResumeForm ({ initialData = null }) {
                   </motion.div>
                 ))}
 
+                {/* Framer Motion animation for the button */}
                 <motion.div
                   className='flex justify-end pt-6'
                   initial={{ opacity: 0, y: 20 }}
@@ -483,6 +497,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Education Details */}
           {step === 2 && (
             <motion.div
               key='step2'
@@ -606,6 +621,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Experience Details */}
           {step === 3 && (
             <motion.div
               key='step3'
@@ -792,6 +808,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Skills Details */}
           {step === 4 && (
             <motion.div
               key='step4'
@@ -964,6 +981,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Achievements Details */}
           {step === 5 && (
             <motion.div
               key='step5'
@@ -1094,6 +1112,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Skills Details */}
           {step === 6 && (
             <motion.div
               key='step6'
@@ -1237,6 +1256,7 @@ export default function ResumeForm ({ initialData = null }) {
             </motion.div>
           )}
 
+          {/* Preview and Save */}
           {step === 7 && (
             <motion.div
               key='step7'
@@ -1334,6 +1354,8 @@ export default function ResumeForm ({ initialData = null }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Right Side - Generating PDF */}
       <div className='w-1/2 p-6 bg-[#1c1c1c]'>
         <div className='sticky top-6'>
           {loading ? (
@@ -1374,6 +1396,7 @@ export default function ResumeForm ({ initialData = null }) {
           )}
         </div>
 
+        {/* Modal for AI Suggestions */}
         {showModal && (
           <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center z-50 backdrop-blur-sm'>
             <motion.div

@@ -1,3 +1,6 @@
+//Function to improve points using Gemini AI
+//It is used in ResumeForm.jsx to take the points given by the user and improve them
+
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 
@@ -29,10 +32,9 @@ export async function POST(request) {
 
     console.log(response);
 
-    const text = response.text;
-
+    //Providing the correct formatting
     const improvedPoints = text
-      .split(/\n+/) // ✅ Correct RegExp
+      .split(/\n+/)
       .map((line) => line.replace(/^[-\d.]*\s*/, "").trim())
       .filter(Boolean);
 

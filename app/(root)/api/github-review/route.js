@@ -1,3 +1,5 @@
+//Here, we get the repositories of a GitHub user using the GitHub API and generate pros, cons, summary, and guide points using Gemini AI.
+
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 

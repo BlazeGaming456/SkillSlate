@@ -1,3 +1,5 @@
+//Generates Cover Letter based on user input and job description
+
 'use client'
 
 import axios from 'axios'
@@ -5,6 +7,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import { generateLatexFromState } from '@/components/coverLetterPreview'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Initial state for the cover letter form
 const initialState = {
   name: '',
   email: '',
@@ -17,6 +20,7 @@ const initialState = {
   content: ''
 }
 
+// Reducer function to manage cover letter state
 function coverLetterReducer (state, action) {
   switch (action.type) {
     case 'SET_FIELD':
@@ -41,6 +45,7 @@ const Page = () => {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
 
+  //Generates the contesnt based on the prompt
   const handleGenerate = async e => {
     e.preventDefault()
     try {
@@ -67,6 +72,7 @@ const Page = () => {
     }
   }
 
+  //Submits the cover letter data to the backend for PDF generation
   const handleSubmit = async e => {
     e.preventDefault()
     try {
@@ -94,13 +100,14 @@ const Page = () => {
       const genPdfUrl = URL.createObjectURL(blob)
       setPdfUrl(genPdfUrl)
 
-      // Open PDF in new tab/window
+      //Open PDF in new tab/window
       window.open(genPdfUrl, '_blank')
     } catch (error) {
       console.error('Error: ', error.message)
     }
   }
 
+  //Handles input changes for personal details
   const handleChange = e => {
     dispatch({
       type: 'SET_FIELD',
@@ -109,6 +116,7 @@ const Page = () => {
     })
   }
 
+  //Handles input changes for recipient address details
   const handleAddressChange = (e, index) => {
     dispatch({
       type: 'SET_ADDRESS_FIELD',
@@ -129,7 +137,9 @@ const Page = () => {
             Build a compelling cover letter that gets you noticed
           </p>
 
+          {/* Left Side */}
           <AnimatePresence mode='wait'>
+            {/* Personal Details */}
             {step === 1 && (
               <motion.div
                 key='step1'
@@ -200,6 +210,7 @@ const Page = () => {
               </motion.div>
             )}
 
+            {/* Recipient Address Details */}
             {step === 2 && (
               <motion.div
                 key='step2'
@@ -287,6 +298,7 @@ const Page = () => {
               </motion.div>
             )}
 
+            {/* Generate Content & Review */}
             {step === 3 && (
               <motion.div
                 key='step3'
@@ -375,6 +387,7 @@ const Page = () => {
           </AnimatePresence>
         </div>
 
+        {/* Right Side - Static */}
         <div className='w-1/2 p-6 bg-[#1c1c1c]'>
           <div className='flex items-center justify-center h-full'>
             <div className='text-center max-w-md'>

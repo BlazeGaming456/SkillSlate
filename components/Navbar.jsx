@@ -1,3 +1,5 @@
+//Navbar component for the Skill Slate application
+
 'use client'
 
 import React, { useState } from 'react'
@@ -17,7 +19,6 @@ const Navbar = () => {
     signOut({ callbackUrl: '/' })
   }
 
-  // Check if we're on the home page
   const isHomePage = pathname === '/'
 
   return (
@@ -64,9 +65,7 @@ const Navbar = () => {
 
       {/* Right side - Profile/Login */}
       <div className='relative flex items-center gap-4'>
-        
-
-        {/* Profile/Login Button */}
+        {/* Profile/Login Button - depending on if authenticated or not*/}
         {status === 'authenticated' ? (
           <div>
             <button

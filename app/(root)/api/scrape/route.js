@@ -1,14 +1,16 @@
+//This is used to scrape job and internship details from a given URL
+//Used in the Improve Rseume page to extract job details for ATS score and improvements
+
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 import * as cheerio from "cheerio";
 
-//Here, we use puppeteer on a local machine, and from puppeteer-core and chromium if on hosted or serverless program.
+//Here, we have to use puppeteer on a local machine, and from puppeteer-core and chromium if on hosted or serverless program.
 
 export async function POST(request) {
   try {
     const { url } = await request.json();
 
-    // Configuration for different environments
     const launchOptions = process.env.VERCEL
       ? {
           args: chromium.args,
@@ -27,12 +29,12 @@ export async function POST(request) {
     const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
 
-    // Set a realistic user agent
+    //Set a realistic user agent to avoid blocking
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     );
 
-    // Configure page behavior
+    //Configure page behavior
     await page.setViewport({ width: 1366, height: 768 });
     await page.setJavaScriptEnabled(true);
 
@@ -45,7 +47,7 @@ export async function POST(request) {
       console.log("Navigation timeout, continuing with loaded content");
     }
 
-    // Wait for critical elements or timeout
+    //Wait for critical elements or timeout
     await Promise.race([
       page.waitForSelector("div.heading_6_6, h1", { timeout: 10000 }),
       new Promise((resolve) => setTimeout(resolve, 10000)),
@@ -56,7 +58,7 @@ export async function POST(request) {
 
     const $ = cheerio.load(html);
 
-    // Information Extraction
+    //Information Extraction
     const title =
       $("h1.heading_4_5").first().text().trim() ||
       $("h1").first().text().trim() ||

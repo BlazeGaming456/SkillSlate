@@ -1,3 +1,5 @@
+//Info Section on the Home Page
+
 'use client'
 
 import React from 'react'
@@ -9,6 +11,7 @@ const features = [
     title: 'AI-Powered Resume Generation',
     description:
       'Create professional, ATS-optimized resumes in minutes using advanced AI that understands industry standards and job requirements.',
+    //Icon provided by AI
     icon: (
       <svg
         className='w-8 h-8'

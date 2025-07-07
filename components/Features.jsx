@@ -1,3 +1,5 @@
+//Features section to display the features of the application and redirect to the respective pages
+
 'use client'
 
 import React, { useState } from 'react'
@@ -11,6 +13,7 @@ const colorMap = {
     bg: 'bg-orange-50',
     dot: 'bg-orange-400',
     arrow: 'text-orange-500',
+    //Icons provided by AI
     icon: (
       <svg width='72' height='72' fill='none' viewBox='0 0 72 72'>
         <rect x='10' y='18' width='52' height='36' rx='8' fill='#FDBA74' />

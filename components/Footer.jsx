@@ -1,3 +1,5 @@
+//Footer component for the Skill Slate application
+
 'use client'
 
 import React from 'react'

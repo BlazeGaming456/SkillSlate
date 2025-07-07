@@ -1,13 +1,15 @@
+//Used to wrap the protected routes and re-route if not authenticated
+
 'use client'
 
 import { useSession } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-// List of public routes that don't require authentication
+//List of public routes that don't require authentication
 const publicRoutes = ['/', '/login', '/sign-in', '/sign-up']
 
-// List of routes that require authentication
+//List of routes that require authentication
 const protectedRoutes = [
   '/dashboard',
   '/generate/resume',
@@ -53,7 +55,7 @@ export default function AuthWrapper ({ children }) {
     )
   }
 
-  // If not authenticated and on a protected route, show loading (will redirect)
+  // If not authenticated and on a protected route, redirect to login
   if (status === 'unauthenticated' && isProtectedRoute) {
     return (
       <div className='min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] flex items-center justify-center'>

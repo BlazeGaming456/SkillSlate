@@ -1,6 +1,9 @@
+//Here, we handle resume retrieval and deletion, including PDF generation from LaTeX code.
+
 import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
 
+//Function to retrieve a resume by ID when we click on a resume in the Dashboard
 export async function GET(req, { params }) {
   try {
     const resume = await prisma.resume.findUnique({
@@ -54,6 +57,7 @@ export async function GET(req, { params }) {
   }
 }
 
+//Function to delete the specified resume on the dashboard
 export async function DELETE(req, { params }) {
   try {
     const resume = await prisma.resume.findUnique({

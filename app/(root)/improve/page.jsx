@@ -1,3 +1,5 @@
+//Gives suggestions to improve the resume based on the job description and resume content
+
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
@@ -27,6 +29,8 @@ export default function ImproveResume () {
     }
   }, [result])
 
+  // Function to handle URL scraping
+  // This function will scrape the job details from the provided URL
   const handleUrl = async () => {
     try {
       setIsLoading(true)
@@ -55,6 +59,8 @@ export default function ImproveResume () {
     }
   }
 
+  // Function to handle form submission
+  // This function will upload the resume file and analyze it
   const handleSubmit = async e => {
     e.preventDefault()
 
@@ -79,8 +85,6 @@ export default function ImproveResume () {
 
       const text = response.data.text
 
-      // console.log(text)
-
       const review = await axios.post(
         '/api/improve',
         { prompt: text, jobDetails: jobDetails, extraJD: extraJD },
@@ -90,8 +94,6 @@ export default function ImproveResume () {
       )
 
       setResult(review.data)
-
-      // console.log(review.data.result)
     } catch (err) {
       console.error('Upload error:', err)
       const message = err?.response?.data?.error || 'Upload failed'
@@ -101,18 +103,20 @@ export default function ImproveResume () {
     }
   }
 
+  // Function to handle file input button click
+  // This function simulates a click on the hidden file input element
   const handleFileButtonClick = () => {
     if (fileInputRef.current) fileInputRef.current.click()
   }
 
   return (
-
     <motion.div
       className='min-h-screen bg-gray-300 mx-auto p-6 md:flex'
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.05, ease: 'easeInOut', duration: 0.4 }}
     >
+      {/* Left Side - Form Section */}
       <AnimatePresence>
         <div className='bg-[#2a2a2a] p-12 w-1/2'>
           <div className='space-y-4 w-full'>
@@ -121,11 +125,11 @@ export default function ImproveResume () {
                 Resume Analyser
               </label>
             </div>
+            {/* Resume Upload Section */}
             <div className=''>
               <label className='text-lg font-mono font-bold text-white w-full mb-4'>
                 Upload your Resume
               </label>
-
               <div className='w-full flex flex-col items-start mt-4 overflow-visible'>
                 <motion.button
                   type='button'
@@ -158,6 +162,7 @@ export default function ImproveResume () {
             </div>
           )}
 
+          {/* Job Description Section */}
           <div className='mt-6 mb-4 flex flex-col'>
             <div className='flex flex-col p-8 gap-1 bg-[#3a3a3a] rounded-xl border border-gray-600'>
               <div className='flex flex-col gap-1'>
@@ -206,6 +211,8 @@ export default function ImproveResume () {
           </div>
         </div>
       </AnimatePresence>
+
+      {/* Right Side - Results Section */}
       <div className='bg-[#1c1c1c] p-12 w-1/2'>
         {result === null || typeof result.atsScore === 'undefined' ? (
           <div className='w-full h-full flex items-center justify-center'>
@@ -218,37 +225,73 @@ export default function ImproveResume () {
             ref={scrollRef}
             className='flex flex-col gap-6 max-h-[80vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-[#00f5a0] scrollbar-track-[#e5e7eb]'
           >
-            {/* ATS Score Card */}
-            {typeof result.atsScore !== 'undefined' && (
-              <motion.div
-                className='bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-800 rounded-2xl shadow-2xl border border-emerald-600 p-8 backdrop-blur-sm'
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-              >
-                <div className='flex items-center mb-4'>
-                  <div className='w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-500 rounded-xl flex items-center justify-center mr-4'>
-                    <svg
-                      className='w-6 h-6 text-white'
-                      fill='currentColor'
-                      viewBox='0 0 20 20'
-                    >
-                      <path
-                        fillRule='evenodd'
-                        d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                        clipRule='evenodd'
-                      />
-                    </svg>
+            {/* Top Cards: Job Match & ATS Score */}
+            <div className='flex flex-col md:flex-row gap-6 mb-2'>
+              {/* Job Match Card */}
+              {result?.jobMatch && (
+                <motion.div
+                  className='flex-1 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-400 rounded-2xl shadow-2xl border-4 border-amber-300 p-8 backdrop-blur-sm flex flex-col items-center justify-center min-w-[220px]'
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease: 'easeOut', delay: 0.05 }}
+                >
+                  <div className='flex items-center mb-3'>
+                    <div className='w-12 h-12 bg-gradient-to-r from-yellow-300 to-orange-400 rounded-xl flex items-center justify-center mr-4 shadow-lg'>
+                      <svg
+                        className='w-7 h-7 text-white drop-shadow-lg'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                      >
+                        <path d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' />
+                      </svg>
+                    </div>
+                    <h3 className='font-bold text-2xl text-amber-900 drop-shadow'>
+                      Job Match
+                    </h3>
                   </div>
-                  <h3 className='font-bold text-2xl text-emerald-100'>
-                    ATS Score
-                  </h3>
-                </div>
-                <div className='text-6xl font-mono font-bold text-emerald-200 drop-shadow-lg text-center'>
-                  {result?.atsScore ?? '--'}/100
-                </div>
-              </motion.div>
-            )}
+                  <div className='text-6xl font-mono font-extrabold text-amber-900 drop-shadow-lg text-center mb-2'>
+                    {result?.jobMatch}/100
+                  </div>
+                  <div className='text-sm text-amber-800 font-semibold text-center'>
+                    How well your resume matches the job
+                  </div>
+                </motion.div>
+              )}
+              {/* ATS Score Card */}
+              {typeof result.atsScore !== 'undefined' && (
+                <motion.div
+                  className='flex-1 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-800 rounded-2xl shadow-2xl border-4 border-emerald-400 p-8 backdrop-blur-sm flex flex-col items-center justify-center min-w-[220px]'
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
+                >
+                  <div className='flex items-center mb-3'>
+                    <div className='w-12 h-12 bg-gradient-to-r from-emerald-400 to-green-500 rounded-xl flex items-center justify-center mr-4 shadow-lg'>
+                      <svg
+                        className='w-7 h-7 text-white drop-shadow-lg'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                      >
+                        <path
+                          fillRule='evenodd'
+                          d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    </div>
+                    <h3 className='font-bold text-2xl text-emerald-100 drop-shadow'>
+                      ATS Score
+                    </h3>
+                  </div>
+                  <div className='text-6xl font-mono font-extrabold text-emerald-200 drop-shadow-lg text-center mb-2'>
+                    {result?.atsScore ?? '--'}/100
+                  </div>
+                  <div className='text-sm text-emerald-200 font-semibold text-center'>
+                    Resume compatibility with ATS
+                  </div>
+                </motion.div>
+              )}
+            </div>
             {/* Pros Card */}
             {result?.pros && (
               <motion.div
@@ -343,7 +386,7 @@ export default function ImproveResume () {
                 </ReactMarkdown>
               </motion.div>
             )}
-            {/* Job Match & Improvements Card (if available) */}
+            {/* Job Match & Improvements Card */}
             {result?.jobMatch && (
               <motion.div
                 className='bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-800 rounded-2xl shadow-2xl border border-amber-600 p-8 backdrop-blur-sm'

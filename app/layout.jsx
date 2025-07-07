@@ -7,13 +7,13 @@ import AuthWrapper from '@/components/AuthWrapper'
 
 const openSans = Open_Sans({
   subsets: ['latin'],
-  weight: ['400', '600', '700'], // You can choose any needed weights
+  weight: ['400', '600', '700'],
   variable: '--font-open-sans'
 })
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  weight: ['400', '500'], // Add the weights you plan to use
+  weight: ['400', '500'],
   variable: '--font-ibm-plex-mono'
 })
 
@@ -31,9 +31,13 @@ export default function RootLayout ({ children }) {
       <body
         className={`${openSans.variable} ${ibmPlexMono.variable} antialiased scroll-smooth`}
       >
+        {/* Session Provider */}
         <Providers>
           <Navbar />
-          <AuthWrapper>{children}</AuthWrapper>
+            {/* Auth Wrapper for protected routes */}
+            <AuthWrapper>
+              {children}
+            </AuthWrapper>
           <Footer />
         </Providers>
       </body>

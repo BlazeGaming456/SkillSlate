@@ -1,3 +1,6 @@
+//Generates the required resume bullet points for projects using AI
+//Used in ResumeForm.jsx
+
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 

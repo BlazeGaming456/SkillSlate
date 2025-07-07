@@ -1,3 +1,6 @@
+//This is used to handle PDF uploads and processing in the Improve Resume page
+//This is then passed to Gemini to generate required prompts for ATS score, pros, cons, and job match improvements
+
 import { NextResponse } from "next/server";
 import { parsePDF } from "@/lib/pdf-utils";
 
@@ -9,8 +12,8 @@ export const config = {
 
 export async function POST(request) {
   try {
-    // 1. Get the file from FormData
     const formData = await request.formData();
+    //Retrieve the file from the form data
     const file = formData.get("resume");
 
     if (!file || file.type !== "application/pdf") {
@@ -20,10 +23,9 @@ export async function POST(request) {
       );
     }
 
-    // 2. Process the PDF
+    //Processing the PDF file
     const result = await parsePDF(file);
 
-    // 3. Return success
     return NextResponse.json(
       {
         success: true,

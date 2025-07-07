@@ -1,7 +1,5 @@
-// lib/auth.js (or wherever you define your NextAuth options)
-
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "@/lib/db"; // ✅ make sure this exists
+import prisma from "@/lib/db";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
@@ -14,7 +12,7 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "database", // or 'jwt' if you're not using the Prisma DB session store
+    strategy: "database",
   },
   callbacks: {
     async session({ session, user }) {

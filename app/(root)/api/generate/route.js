@@ -1,3 +1,5 @@
+//Generates the required cover letter content using AI
+
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 
