@@ -1,8 +1,5 @@
 {
-  "functions": {
-    "api/scrape/route.js": {
-      "memory": 1024,
-      "maxDuration": 20
-    }
-  }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
 }
