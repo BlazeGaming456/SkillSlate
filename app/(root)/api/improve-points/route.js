@@ -32,6 +32,8 @@ export async function POST(request) {
 
     console.log(response);
 
+    const text = response.text;
+
     //Providing the correct formatting
     const improvedPoints = text
       .split(/\n+/)

@@ -228,6 +228,22 @@ export function generateLatexFromState(state) {
     achievements = [],
   } = state;
 
+  // Helper to extract username or fallback
+  const getLabel = (url, fallback) => {
+    if (!url) return "";
+    try {
+      const u = new URL(url);
+      // Remove all slashes, get last non-empty part
+      const parts = u.pathname.split("/").filter(Boolean);
+      return parts.length ? parts[parts.length - 1] : fallback;
+    } catch {
+      // Not a valid URL, just return as-is
+      return url;
+    }
+  };
+  const linkedinLabel = getLabel(linkedin, "LinkedIn");
+  const githubLabel = getLabel(github, "GitHub");
+
   const renderEducation = education
     .filter((edu) => edu.title || edu.subtitle || edu.date)
     .map(
@@ -371,8 +387,8 @@ ${proj.points
   \\vspace{1pt}
   \\small ${escape(phone)} $|$
   \\href{mailto:${escape(email)}}{${escape(email)}} $|$
-  \\href{${escape(linkedin)}}{LinkedIn} $|$
-  \\href{${escape(github)}}{GitHub}
+  ${linkedin ? `\\href{${escape(linkedin)}}{${escape(linkedinLabel)}} $|$` : ""}
+  ${github ? `\\href{${escape(github)}}{${escape(githubLabel)}}` : ""}
 \\end{center}
 
 % Education
