@@ -165,4 +165,4 @@ model Resume {
 
 ---
 
-_Skill Slate — The fastest way to generate, improve, and ace your developer resume!_
+_Skill Slate — The fastest way to generate, improve, and ace your developer resume, cover-letter and github profile!_
