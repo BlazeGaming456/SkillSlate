@@ -4,12 +4,6 @@
 import { NextResponse } from "next/server";
 import { parsePDF } from "@/lib/pdf-utils";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request) {
   try {
     const formData = await request.formData();
