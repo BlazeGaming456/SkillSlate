@@ -3,7 +3,7 @@
 > **AI-powered Resume & Cover Letter Generator**  
 > Built with Next.js, Tailwind CSS, Gemini API, pdf-parse, Prisma, and more.
 
-You can visit the live page at https://your-live-link.com
+You can visit the live page at https://skillslate.vercel.app/
 
 You can see the video demo of the page at https://youtu.be/LKxXYOuIXr4
 
@@ -12,6 +12,16 @@ You can see the video demo of the page at https://youtu.be/LKxXYOuIXr4
 ## Screenshots
 
 ![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+![alt text](image-5.png)
+
+![alt text](image-4.png)
 
 ---
 
@@ -24,29 +34,35 @@ Skill Slate is a modern, full-stack web application that empowers developers and
 ## ✨ Features
 
 ### 💻 Modern UI/UX
+
 - Neon-accented landing page with animations
 - Mobile-first, responsive design
 - Dark theme with consistent branding
 
 ### 📄 Resume Generator
+
 - Step-by-step form builder with live LaTeX PDF preview
 - Export clean, ATS-friendly PDF resumes
 - AI bullet point enhancement (Projects, Experience, etc.)
 
 ### ✍️ Cover Letter Generator
+
 - Create job-specific cover letters with AI
 - Preview and export LaTeX-based PDF
 
 ### 🧠 Resume Improvement & ATS Analysis
+
 - Upload your resume to get AI suggestions
 - ATS score + job match analysis (based on JD or scraped job link)
 - Visual feedback cards
 
 ### 🔍 GitHub Profile Review
+
 - Enter GitHub username for a smart review
 - AI-generated summary, pros/cons, and improvement tips
 
 ### 📊 Dashboard & Analytics
+
 - View, edit, and delete saved resumes
 - Resume analytics (best/average ATS score, total created)
 

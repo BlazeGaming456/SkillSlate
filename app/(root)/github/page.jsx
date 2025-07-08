@@ -76,7 +76,7 @@ const page = () => {
                 className='w-1/2 mt-3 self-center px-4 py-2 bg-[#00f5a0] text-black font-mono rounded-md
            disabled:bg-gray-400 hover:bg-[#00d488] transition-all duration-300 transform hover:transform-scale-105 shadow-lg hover:shadow-xl disabled:cursor-not-allowed hover:cursor-pointer'
               >
-                {loading ? 'Processing...' : 'Analyze PDF'}
+                {loading ? 'Processing...' : 'Analyze Profile'}
               </motion.button>
             </form>
           </div>
