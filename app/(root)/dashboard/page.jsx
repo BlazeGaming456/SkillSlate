@@ -15,9 +15,23 @@ export default function DashboardPage () {
   //Fetches resumes from the API when the user is authenticated
   const fetchResumes = async () => {
     if (status === 'authenticated') {
-      const res = await fetch('/api/resumes')
-      const data = await res.json()
-      setResumes(data)
+      try {
+        const res = await fetch('/api/resumes')
+        if (!res.ok) {
+          // If unauthorized, force sign out or show error
+          setResumes([])
+          setLoading(false)
+          return
+        }
+        const data = await res.json()
+        if (Array.isArray(data)) {
+          setResumes(data)
+        } else {
+          setResumes([])
+        }
+      } catch (err) {
+        setResumes([])
+      }
       setLoading(false)
     }
   }
@@ -70,9 +84,12 @@ export default function DashboardPage () {
     )
 
   //Calculate best and average ATS scores for analytics
-  const bestScore = Math.max(...resumes.map(r => r.atsScore))
+  const bestScore =
+    resumes.length > 0 ? Math.max(...resumes.map(r => r.atsScore)) : 0
   const avgScore =
-    resumes.reduce((acc, r) => acc + r.atsScore, 0) / resumes.length
+    resumes.length > 0
+      ? resumes.reduce((acc, r) => acc + r.atsScore, 0) / resumes.length
+      : 0
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#2a2a2a] p-6'>
