@@ -77,7 +77,7 @@ export default function ImproveResume () {
       const formData = new FormData()
       formData.append('resume', file)
 
-      const response = await axios.post('/api/score', formData, {
+      const response = await axios.post('/api/pdfscore', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
