@@ -1,5 +1,8 @@
 # Skill Slate
 
+-> Because of Gemini API limits, the app may be temporarily down at certain times. If so, please view the video demo to explore the demo.
+Will try to improve it in the future! <-
+
 > **AI-powered Resume & Cover Letter Generator**  
 > Built with Next.js, Tailwind CSS, Gemini API, pdf-parse, Prisma, and more.
 
