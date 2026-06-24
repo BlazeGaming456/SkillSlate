@@ -9,7 +9,7 @@ export async function POST(request) {
     const { prompt } = await request.json();
 
     const res = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `You're an AI Resume Improver. The user has given you a prompt detailing their experience. Seperate each experience or work and make 4 points from each.
             The points should be clear and optimise such that it will be best to put into a resume.
             

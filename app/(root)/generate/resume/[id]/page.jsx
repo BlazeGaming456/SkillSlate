@@ -2,6 +2,7 @@
 
 import EditResumePage from '@/components/EditResumePage'
 
-export default function Page ({ params }) {
-  return <EditResumePage id={params.id} />
+export default async function Page ({ params }) {
+  const { id } = await params;
+  return <EditResumePage id={id} />
 }

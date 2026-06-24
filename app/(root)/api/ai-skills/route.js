@@ -9,7 +9,7 @@ export async function POST(request) {
     const { prompt } = await request.json();
 
     const res = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `You are an expert resume builder. Given the following job description, generate an ideal skills section for a candidate applying to this job. Categorize the skills into 4-5 relevant sections (e.g., Programming Languages, Frameworks, Tools, Soft Skills, etc.), and list the most important and modern skills for each.
 
 Format:

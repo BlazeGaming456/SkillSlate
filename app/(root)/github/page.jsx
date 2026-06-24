@@ -34,7 +34,12 @@ const page = () => {
         body: JSON.stringify({ username })
       })
 
-      const { pros, cons, summary, guide } = await res.json()
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to fetch github review')
+      }
+      
+      const { pros, cons, summary, guide } = data
       setPros(pros)
       setCons(cons)
       setSummary(summary)

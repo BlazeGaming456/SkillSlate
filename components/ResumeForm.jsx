@@ -225,7 +225,7 @@ export default function ResumeForm ({ initialData = null }) {
 
         //Calls the backend to compile the LaTeX code into a PDF
         const res = await fetch(
-          'https://latex-compiler-backend-production-3063.up.railway.app/compile',
+          process.env.NEXT_PUBLIC_LATEX_COMPILER_URL || 'https://latex-compiler-backend-production-3063.up.railway.app/compile',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

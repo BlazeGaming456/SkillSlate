@@ -16,7 +16,7 @@ export async function POST(request) {
 
   try {
     const response = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `You're an AI resume improver. THe given points may belong to ${type}
             Improve them to be more impactful, clear and achievement-driven.
             Improve each of the lines and then return as many lines as was given.

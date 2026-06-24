@@ -9,7 +9,7 @@ export async function POST(request) {
     const { prompt } = await request.json();
 
     const res = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `You're an AI Resume Improver. The user has given you a prompt detailing their projects. Separate each project and make 4 strong, concise, resume-elevating bullet points for each project, based on the user's description.
 
 The given is the prompt:

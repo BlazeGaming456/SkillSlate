@@ -10,16 +10,16 @@ export default function FadeSection ({ children }) {
       <motion.section
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className='hidden md:flex min-h-screen items-center justify-center'
+        className='hidden md:block w-full'
       >
         {children}
       </motion.section>
       {/* Mobile: always visible, no animation */}
       <motion.section
         animate={{ opacity: 1, y: 0 }}
-        className='flex md:hidden min-h-screen items-center justify-center'
+        className='block md:hidden w-full'
       >
         {children}
       </motion.section>

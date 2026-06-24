@@ -6,8 +6,9 @@ import { NextResponse } from "next/server";
 //Function to retrieve a resume by ID when we click on a resume in the Dashboard
 export async function GET(req, { params }) {
   try {
+    const { id } = await params;
     const resume = await prisma.resume.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!resume) {
@@ -19,7 +20,7 @@ export async function GET(req, { params }) {
     if (url.searchParams.get("format") === "pdf") {
       // Generate PDF from LaTeX code
       const res = await fetch(
-        "https://latex-compiler-backend-production-3063.up.railway.app/compile",
+        process.env.NEXT_PUBLIC_LATEX_COMPILER_URL || "https://latex-compiler-backend-production-3063.up.railway.app/compile",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -60,8 +61,9 @@ export async function GET(req, { params }) {
 //Function to delete the specified resume on the dashboard
 export async function DELETE(req, { params }) {
   try {
+    const { id } = await params;
     const resume = await prisma.resume.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!resume) {
@@ -69,7 +71,7 @@ export async function DELETE(req, { params }) {
     }
 
     await prisma.resume.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

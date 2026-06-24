@@ -8,7 +8,7 @@ export async function POST(request) {
 
   try {
     const response = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `You are supposed to make the content for a cover letter. It should be in 3 paragraphs, enough for a page. The paragraphs should be seperated, that is on a new line.
       The following is the prompt:
       ${prompt}
